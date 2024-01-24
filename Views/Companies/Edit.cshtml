@@ -1,0 +1,40 @@
+﻿@model Company
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome - Linkedin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Linkedin.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <h2>Edit Company</h2>
+
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="CompanyId" />
+
+        <div class="form-group">
+            <label asp-for="CompanyName"></label>
+            <input asp-for="CompanyName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="CompanyDescription"></label>
+            <textarea asp-for="CompanyDescription" class="form-control"></textarea>
+        </div>
+        <div class="form-group">
+            <label asp-for="CompanyNoEmployees"></label>
+            <input asp-for="CompanyNoEmployees" class="form-control" type="string" />
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
+    </form>
+
+    <div>
+        <a asp-action="Home">Back to List</a>
+    </div>
+</body>
+</html>

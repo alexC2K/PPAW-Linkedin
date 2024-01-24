@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome - Linkedin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Linkedin.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/169412d7b5.js" crossorigin="anonymous"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                @if (Model.IsRecruiter)
+                {
+                    <h1 class="text-center mb-4">Welcome, @Model.User.Name!</h1>
+
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <h2><i class="fas fa-building"></i> Your Companies:</h2>
+                            @if (Model.RecruiterCompanies != null && Model.RecruiterCompanies.Count > 0)
+                            {
+                                foreach (var company in Model.RecruiterCompanies)
+                                {
+                                    <div class="card mb-3">
+                                        <div class="card-header">
+                                            <h4>@company.Name</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <p><i class="fas fa-users"></i> Number of Employees: @company.NumberOfEmployees</p>
+                                        </div>
+                                        <div class="card-body">
+                                            <p><i class="fas fa-info-circle"></i> Description: @company.Description</p>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p><i class="fas fa-exclamation-triangle"></i> You are not associated with any companies.</p>
+                            }
+                            <h2><i class="fas fa-briefcase"></i> Applicants for Your Jobs:</h2>
+                            <table class="table">
+                                @foreach (var job in Model.RecruiterJobs)
+                                {
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4">@job.JobTitle</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Applicant Name</th>
+                                            <th>Company Name</th>
+                                            <th>Application Date</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var application in Model.ApplicationsForJobs[job.JobId])
+                                        {
+                                            <tr>
+                                                <td>@application.JobSeeker?.Name</td>
+                                                <td>@job.Company?.CompanyName</td>
+                                                <td>@application.ApplicationDate</td>
+                                                <td>@application.Status</td>
+                                                <td>
+                                                    @if (application.Status == ApplicationStatus.Pending)
+                                                    {
+                                                        <form method="post" asp-controller="Users" asp-action="AcceptApplication">
+                                                            <input type="hidden" name="applicationId" value="@application.ApplicationId" />
+                                                            <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Accept</button>
+                                                        </form>
+                                                        <form method="post" asp-controller="Users" asp-action="RejectApplication">
+                                                            <input type="hidden" name="applicationId" value="@application.ApplicationId" />
+                                                            <button type="submit" class="btn btn-danger"><i class="fas fa-times"></i> Reject</button>
+                                                        </form>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p><i class="fas fa-info-circle"></i> No available options.</p>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                }
+                            </table>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <h1 class="text-center mb-4">Welcome, @Model.User.Name!</h1>
+
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <h2><i class="fas fa-briefcase"></i> Recommended Jobs:</h2>
+                            <ul class="list-group">
+                                @foreach (var job in Model.RecommendedJobs)
+                                {
+                                    <li class="list-group-item">
+                                        <i class="fas fa-briefcase"></i>
+                                        @job.JobTitle - @job.JobDescription
+                                        <br />
+                                        <i class="fas fa-building"></i> @job.Company?.CompanyName
+                                    </li>
+                                }
+                            </ul>
+
+                            <h2><i class="fas fa-file-alt"></i> Your Applications:</h2>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th><i class="fas fa-briefcase"></i> Job Title</th>
+                                        <th><i class="fas fa-building"></i> Company Name</th>
+                                        <th><i class="fas fa-calendar"></i> Application Date</th>
+                                        <th><i class="fas fa-info-circle"></i> Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var application in Model.UserApplications)
+                                    {
+                                        <tr>
+                                            <td>@application.Job?.JobTitle</td>
+                                            <td>@application.Job?.Company?.CompanyName</td>
+                                            <td>@application.ApplicationDate</td>
+                                            <td>@application.Status</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

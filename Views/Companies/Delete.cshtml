@@ -1,0 +1,34 @@
+﻿@model Company
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome - Linkedin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Linkedin.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <h2>Delete Company</h2>
+
+    <h3>Are you sure you want to delete this company?</h3>
+    <div>
+        <h4>Title: @Model.CompanyName</h4>
+        <h4>Description: @Model.CompanyDescription</h4>
+        <h4>Number of Employees: @Model.CompanyNoEmployees</h4>
+    </div>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="CompanyId" />
+        <div class="form-group">
+            <input type="submit" value="Delete" class="btn btn-danger" />
+        </div>
+    </form>
+
+    <div>
+        <a asp-action="Home">Back to List</a>
+    </div>
+</body>
+</html>

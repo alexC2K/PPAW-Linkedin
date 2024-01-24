@@ -1,0 +1,158 @@
+﻿@model JobsViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome - Linkedin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Linkedin.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <script>
+        function submitApplication(jobId) {
+            var form = document.getElementById('applyForm-' + jobId);
+            var formData = new FormData(form);
+
+            $.ajax({
+                type: 'POST',
+                url: '/Jobs/ApplyForJob',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    alert('Application submitted successfully!');
+                    $('#applyModal-' + jobId).modal('hide');
+                },
+                error: function (error) {
+                    alert('Error submitting application. Please try again.');
+                }
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <h2>Jobs</h2>
+    @if (Model.IsRecruiter)
+    {
+        <p><i class="fas fa-user-tie"></i> Welcome Recruiter! You can view all jobs posted by you.</p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Job Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var job in Model.PostedJobs)
+                {
+                    <tr>
+                        <td>@job.JobTitle</td>
+                        <td>@job.JobDescription</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h2><i class="fas fa-briefcase"></i> Recommended Jobs</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Job Description</th>
+                    <th>Company</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var job in Model.RecommendedJobs)
+                {
+                    <tr>
+                        <td>@job.JobTitle</td>
+                        <td>@job.JobDescription</td>
+                        <td>@job.Company?.CompanyName</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#applyModal-@job.JobId">
+                                <i class="fas fa-check"></i> Apply
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <h2><i class="fas fa-briefcase"></i> Other Jobs</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Job Description</th>
+                    <th>Company</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var job in Model.OtherJobs)
+                {
+                    <tr>
+                        <td>@job.JobTitle</td>
+                        <td>@job.JobDescription</td>
+                        <td>@job.Company?.CompanyName</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#applyModal-@job.JobId">
+                                <i class="fas fa-check"></i> Apply
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    @foreach (var job in Model.RecommendedJobs.Concat(Model.OtherJobs))
+    {
+        <div class="modal fade" id="applyModal-@job.JobId" tabindex="-1" role="dialog" aria-labelledby="applyModalLabel-@job.JobId" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="applyModalLabel-@job.JobId">Apply for @job.JobTitle</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="applyForm-@job.JobId" enctype="multipart/form-data">
+                            <input type="hidden" name="jobId" value="@job.JobId" />
+
+                            <div class="form-group">
+                                <label for="resume-@job.JobId"><i class="fas fa-file"></i> CV:</label>
+                                <input type="file" class="form-control-file" id="resume-@job.JobId" name="resume" accept=".pdf,.doc,.docx" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="additionalInfo-@job.JobId"><i class="fas fa-info-circle"></i> Additional Info:</label>
+                                <textarea class="form-control" id="additionalInfo-@job.JobId" name="additionalInfo" required></textarea>
+                            </div>
+
+                            <button type="button" class="btn btn-primary" onclick="submitApplication('@job.JobId')">
+                                <i class="fas fa-check"></i> Apply
+                            </button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</body>
+</html>

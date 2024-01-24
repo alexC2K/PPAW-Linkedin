@@ -1,0 +1,99 @@
+﻿@model LoginRegisterViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login or Register - Linkedin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Linkedin.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+
+                @if (ViewData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger">
+                        @ViewData["ErrorMessage"]
+                    </div>
+                }
+
+                <div class="card">
+                    <div class="card-body" id="loginForm">
+                        <h2 class="text-center mb-4">Login</h2>
+                        <form asp-action="Login" method="post">
+                            @Html.AntiForgeryToken()
+                            <div class="form-group">
+                                <label for="loginEmail">Email:</label>
+                                <input type="email" id="loginEmail" name="Email" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="loginPassword">Password:</label>
+                                <input type="password" id="loginPassword" name="Password" class="form-control" required />
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">Login</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="card-body d-none" id="registerForm">
+                        <h2 class="text-center mb-4">Register</h2>
+                        <form asp-action="Register" method="post">
+                            @Html.AntiForgeryToken()
+                            <div class="form-group">
+                                <label for="registerEmail">Email:</label>
+                                <input type="email" id="registerEmail" name="Email" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="registerPassword">Password:</label>
+                                <input type="password" id="registerPassword" name="Password" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="registerName">Name:</label>
+                                <input type="text" id="registerName" name="Name" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="registerPhoneNo">Phone Number:</label>
+                                <input type="text" id="registerPhoneNo" name="PhoneNo" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="registerSkills">Skills:</label>
+                                <input type="text" id="registerSkills" name="Skills" class="form-control" required />
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-success">Register</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="text-center mt-3">
+                    <p class="mb-0" style="cursor: pointer;" onclick="showLoginForm()">Already have an account? Login here.</p>
+                    <p class="mb-0" style="cursor: pointer;" onclick="showRegisterForm()">Don't have an account? Register here.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    <script>
+        function showRegisterForm() {
+            document.getElementById('loginForm').classList.add('d-none');
+            document.getElementById('registerForm').classList.remove('d-none');
+        }
+
+        function showLoginForm() {
+            document.getElementById('registerForm').classList.add('d-none');
+            document.getElementById('loginForm').classList.remove('d-none');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Company>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome - Linkedin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Linkedin.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <h2>Recruiter's Companies</h2>
+
+    <p>
+        <a asp-action="Create">Add New Company</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Number of Employees</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var company in Model)
+            {
+                <tr>
+                    <td>@company.CompanyName</td>
+                    <td>@company.CompanyDescription</td>
+                    <td>@company.CompanyNoEmployees</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@company.CompanyId">Details</a> |
+                        <a asp-action="Edit" asp-route-id="@company.CompanyId">Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@company.CompanyId">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>
